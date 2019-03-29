@@ -25,7 +25,7 @@ namespace own_kursach
 
         const int maxTime = 10;
 
-        const int clasterAmount = 3;
+        const int clasterAmount = 6;
 
         public static void GenerateZero(double[][] arr)
         {
@@ -52,7 +52,7 @@ namespace own_kursach
                 // Добавлен zero в Gtspp, чтобы не писать условия на ув. фер. слоя
 
                 Console.Clear();
-                /*   double[][] matrix = new double[6][];
+             /*     double[][] matrix = new double[6][];
                    matrix[0] = new double[] { inf, inf, inf, 7, inf, inf };
                    matrix[1] = new double[] { inf, inf, inf, inf, 1, inf };
                    matrix[2] = new double[] { inf, inf, inf, 4, inf, inf };
@@ -68,7 +68,7 @@ namespace own_kursach
                 matrix[4] = new double[] { 9, 8, 9, 6, 1000000, 15 };
                 matrix[5] = new double[] { 6, 7, 8, 9, 15, 1000000 };
 
-                int[] clusters = { 3, 2, 1 };
+                int[] clusters = { 1, 1, 1,1,1,1 };
 
                 Methods.ShowAdjensencyMatrixDouble(matrix);
                 double[][] pheromones = Methods.FormDoubleMatrix(numberCity);
@@ -81,8 +81,7 @@ namespace own_kursach
                 }
 
                 Methods.ShowPheremonesMatrix(pheromones);
-                Trial.FindTheBestTrial(pheromones,0, 6, matrix, clusters);
-
+                Trial.FindBest(pheromones, matrix, clusters);
                 Console.WriteLine("ESC");
             } while (Console.ReadKey().Key != ConsoleKey.Escape);
         }

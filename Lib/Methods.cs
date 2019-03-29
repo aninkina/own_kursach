@@ -91,12 +91,12 @@ namespace Lib
             Console.Write($"-------");
             for (int i = 0; i < dist.GetLength(0); i++)
             {
-                Console.Write($"[{i + 1}] -");
+                Console.Write($"[{i}] --");
             }
             Console.WriteLine();
             for (int i = 0; i < dist.GetLength(0); i++)
             {
-                Console.Write($"[{i + 1}] ");
+                Console.Write($"[{i}] ");
 
                 for (int j = 0; j < dist.GetLength(0); j++)
                 {
@@ -108,16 +108,25 @@ namespace Lib
             }
         }
 
-        public static void ShowPheremonesMatrix( double[][] pheremones)
+        public static void ShowPheremonesMatrix( double[][] dist)
         {
-            for( int i=0; i < pheremones.GetLength(0); i++)
+            Console.WriteLine();
+
+            Console.Write($"-------");
+            for (int i = 0; i < dist.GetLength(0); i++)
             {
-                for( int j = 0; j < pheremones.GetLength(0); j++)
+                Console.Write($"[{i}] --");
+            }
+            Console.WriteLine();
+            for (int i = 0; i < dist.GetLength(0); i++)
+            {
+                Console.Write($"[{i}] ");
+
+                for (int j = 0; j < dist.GetLength(0); j++)
                 {
-                    Console.Write($"{pheremones[i][j]:f4} ");
+                        Console.Write($"{dist[i][j]:f3} ");
                 }
                 Console.WriteLine();
-                Console.WriteLine("-------------------");
             }
         }
 
