@@ -207,6 +207,7 @@ namespace Lib
 
         public static void FindBest( double[][] pheremones, double[][] dist, int[] clusters)
         {
+            //
             // Choose first city
             double maxPheromone = 0;
             int indexMaxLine = -1;
