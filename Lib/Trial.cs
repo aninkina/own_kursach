@@ -11,13 +11,13 @@ namespace Lib
         //     double trialLength;//  Текущая длина маршрута 
 
         //  public static double[][] pheremones, dist;
-        int[] clusters;
+        Cluster[] cl;
 
         List<int> box = new List<int>(); // Чтобы бы не добавлять в маршрут лишние города
 
         int[] cities; // пройденные города
 
-        int currentCity; // Текущий город
+       public int currentCity; // Текущий город
 
         int currentAmount = 0; // Текущее количество городов
 
@@ -26,11 +26,11 @@ namespace Lib
         /// </summary>
         /// <param name="targetCity">targetCity == currentCity</param>
         /// <param name="totalCities">количество городов всего в маршруте</param>
-        public Trial(int targetCity, int[] clusters)
+        public Trial(int targetCity, Cluster[] cl)
         {
-            int totalCities = clusters.Length;
-            this.clusters = new int[clusters.Length];
-            clusters.CopyTo(this.clusters, 0);
+            int totalCities = cl.Length;
+            this.cl = new Cluster[cl.Length];
+            cl.CopyTo(this.cl, 0);
             cities = new int[totalCities];
             for (int i = 0; i < totalCities; i++)
             {
@@ -62,29 +62,17 @@ namespace Lib
         } // Длина всего маршрута
 
         /*******************/
-        public static int IdentifyCluster(int index, int[] clusters)
-        {
-            int border = 0;
-            for (int i = 0; i < clusters.Length; i++)
-            {
-                border += clusters[i];
-                if (index < border) { return i; }
-            }
-            throw new Exception($"город не нвйден в кластерах .индекс ={ index}");
-        }
 
         /*******************/
         public void AddAllClusterToBox(int targetCity)
         {
-            int indexCluster = IdentifyCluster(targetCity, this.clusters);// индекс
-            int indexCity = 0;
-            for (int i = 0; i < indexCluster; i++)
+            List<int> indexCluster = TrialMethods.IdentifyCluster(targetCity, this.cl);// индекс
+            for (int j = 0; j < indexCluster.Count; j++)
             {
-                indexCity += clusters[i];
-            }
-            for (int i = 0; i < clusters[indexCluster]; i++)
-            {
-                box.Add(i + indexCity);
+              for( int i = 0; i < cl[j].Length; i++)
+                {
+                    box.Add(cl[j].Element(i));
+                }
             }
         }
 
@@ -152,20 +140,7 @@ namespace Lib
             return probabilities;
         }
 
-        // Рандомит следующий город
-        public static int GetChosenCity(double[] probabilities)
-        {
-            double rand = RandomNumbers.RandProbability();
-            double temp = 0;
-            for (int i = 0; i < probabilities.Length; i++)
-            {
-                temp += probabilities[i];
-                if (rand <= temp) { return i; }
-
-            }
-            return -1; // Никогда не должен сработать
-        }
-
+      
         /// <summary>
         /// Изменяет феромоновый слой, по выбранному маршруту, явл-ся наилучшим (уплотнение слоя)
         /// </summary>
@@ -177,21 +152,23 @@ namespace Lib
         /// <param name="forgetConst">( коэфицент забывания старых феромонов (лежит в промежутке -- [0,1] )</param>
         /// <param name="distanceImportance">( нормирующий коэфицент нового слоя
         /// ( чтобы новый слой был сопоставим старому по значению)</param>
-        public static void ChangePheromones(double[][] pheromones, double[][] dist, int firstCity,
-            double forgetRate, double distanceImportance, double alpha, double beta, int[] clusters)
+        public static void ChangePheromones(double[][] pheromones, double[][] dist, 
+            double forgetRate, double distanceImportance, double alpha, double beta, Cluster[] cl)
         {
+            int firstCity = RandomNumbers.GetRandom.Next(0, 6);
+
             Console.WriteLine($"first city = {firstCity}");//
-            Trial obj = new Trial(firstCity, clusters);
+            Trial obj = new Trial(firstCity, cl);
             // Пока маршрут не закончен, добавляю наилучшие города
             while (!obj.IsTrialCompleted())
             {
-                int newCity = GetChosenCity(CreateTrialProbability(obj, pheromones, dist, alpha, beta)); // Новый наилучший город
+                int newCity = RandomNumbers.GetChosenCity(CreateTrialProbability(obj, pheromones, dist, alpha, beta)); // Новый наилучший город
                 Console.WriteLine($"next city = {newCity}");
                 obj.AddCity(newCity);
             }
             // Маршрут создан
             // Теперь по нему меняем вес феромонов на всех ребрах, построенного маршрута
-            for (int i = 0; i < clusters.Length - 1; i++)
+            for (int i = 0; i < cl.Length - 1; i++)
             {
                 if (obj.GetTrialLength(dist) < 100)// Надо исключить деревья ( нет пути из конца в начало)
                 {
@@ -205,42 +182,6 @@ namespace Lib
             }
         }
 
-        public static void FindBest( double[][] pheremones, double[][] dist, int[] clusters)
-        {
-            //
-            // Choose first city
-            double maxPheromone = 0;
-            int indexMaxLine = -1;
-            int indexMaxColumn = -1;
-            for( int i =0; i < clusters[i]; i++)
-            {
-                for( int j =0; j < pheremones.GetLength(0); j++)
-                {
-                    if(IdentifyCluster(j, clusters) != IdentifyCluster(i, clusters) )
-                    if( maxPheromone < pheremones[i][j]) { maxPheromone = pheremones[i][j]; indexMaxLine = i; indexMaxColumn = j;}
-                }
-            }
-            // Нашли максимальный след из первого кластера в другой
-            Trial obj = new Trial(indexMaxLine, clusters);
-            obj.AddCity(indexMaxColumn);
-
-            while(!obj.IsTrialCompleted())
-            {
-                int indexMax = -1;
-                double max = 0;
-                for( int i = 0; i < pheremones.GetLength(0); i++)
-                {
-                    if( obj.IsAllowedCity(i))
-                    if( max < pheremones[obj.currentCity][i]) { max = pheremones[obj.currentCity][i]; indexMax = i; }
-                }
-                obj.AddCity(indexMax);
-            }
-            Console.WriteLine("The Best trial");
-            obj.ShowTrial();
-            Console.Write($"The length:{obj.GetTrialLength(dist)} ");
-            Console.WriteLine();
-
-        }
 
         public void ShowTrial()
         {
