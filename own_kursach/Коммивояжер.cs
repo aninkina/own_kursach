@@ -23,7 +23,7 @@ namespace own_kursach
 
         const int numberCity = 6;
 
-        const int maxTime = 10;
+        const int maxTime = 1;
 
         public static void GenerateZero(double[][] arr)
         {
@@ -41,6 +41,12 @@ namespace own_kursach
         {
             do
             {
+                Console.Clear();
+
+                double[][] matrix;
+                Cluster[] cl;
+                ReadTheFile.Read(out matrix, out int n, out int m, out cl);
+             
                 // Поменяли вызов на матрицу Matrix
                 // Не отличаю  прочерка от бесконечности
                 // Добавила L в ChangePheromones ничего не изменилось ( deltaT сравнима с newT)
@@ -49,14 +55,13 @@ namespace own_kursach
                 // Не понимаю приколов с M
                 // Добавлен zero в Gtspp, чтобы не писать условия на ув. фер. слоя
 
-                Console.Clear();
-                   double[][] matrix = new double[6][];
+                  /* double[][] matrix = new double[6][];
                    matrix[0] = new double[] { inf, inf, inf, 7, inf, inf };
                    matrix[1] = new double[] { inf, inf, inf, inf, 1, inf };
                    matrix[2] = new double[] { inf, inf, inf, 4, inf, inf };
                    matrix[3] = new double[] { inf, inf, inf, inf, inf, 5 };
                    matrix[4] = new double[] { inf, inf, inf, inf, inf, 2 };
-                   matrix[5] = new double[] { 6, 3, 8, inf, inf, inf };
+                   matrix[5] = new double[] { 6, 3, 8, inf, inf, inf };*/
 
                 /*double[][] matrix = new double[6][];
                 matrix[0] = new double[] { 1000000, 1, 2, 3, 9, 6 };
@@ -68,15 +73,14 @@ namespace own_kursach
                 */
 
                 // Надо заменить на этот клстер всё
-                Cluster[] cl = new Cluster[3];
+           /*    Cluster[] cl = new Cluster[3];
                 cl[0] = new Cluster(new int[]{0,1,2});
                 cl[1] = new Cluster(new int[] { 3,4});
-                cl[2] = new Cluster(new int[] { 5 });
+                cl[2] = new Cluster(new int[] { 5 });*/
 
-                int[] clusters = { 3,2,1};
 
                 Methods.ShowAdjensencyMatrixDouble(matrix);
-                double[][] pheromones = Methods.FormDoubleMatrix(numberCity);
+                double[][] pheromones = Methods.FormDoubleMatrix(n);
                 Methods.GenerateRandomPheromones(pheromones);
 
                 for (int i = 0; i < maxTime; i++)

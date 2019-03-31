@@ -124,7 +124,7 @@ namespace Lib
 
                 for (int j = 0; j < dist.GetLength(0); j++)
                 {
-                        Console.Write($"{dist[i][j]:f3} ");
+                        Console.Write($"  {dist[i][j]:f2}");
                 }
                 Console.WriteLine();
             }
